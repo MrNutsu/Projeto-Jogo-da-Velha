@@ -6,8 +6,10 @@ Início do Projeto - Jogo da Velha
 #include <string>
 
 using namespace std; 
- int main(){
 
-    
- }
+int main(){
+
+    /*batata é bom*/    
+
+}
 
