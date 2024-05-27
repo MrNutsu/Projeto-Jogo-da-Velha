@@ -78,7 +78,7 @@ int main (){
         board[row][column] = currentPlayer;
 
 
-// Verificação de vitória nas linhas e colunas
+// Verificação de vitória nas linhas e colunas, se o jogador atual ganhar, o jogo acaba
         for (int i = 0; i < 3; i++) {
             if ((board[i][0] == board[i][1] && board[i][0] == board[i][2] && board[i][0] != ' ') ||
                 (board[0][i] == board[1][i] && board[0][i] == board[2][i] && board[0][i] != ' ')) {
