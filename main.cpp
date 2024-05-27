@@ -138,6 +138,9 @@ void movimentojogador()
     } while (board[x][y] != ' ');
 }
 
+/* Função que permite o pc fazer uma jogada.
+Faz isso verificando se a posição escolhida está vazia, e depois atribuindo a posição escolhida pelo pc ao tabuleiro. 
+*/
 void movimentopc()
 {
     srand(time(0));
