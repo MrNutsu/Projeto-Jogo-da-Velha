@@ -1,123 +1,132 @@
-/* 24-05-2024
-Início do Projeto - Jogo da Velha
-*/
-
-//   atualizacao 25/05/2024 
-
-//1°versao do "player 1 vs player 2". 
-//bem feinha mas vou melhorar ate terca-feira!!
-
-
 #include <iostream>
-#include <string>
 using namespace std;
 
-int main (){
-    char board [3][3] = {{ ' ', ' ',' '}, {' ', ' ',' ' }, {' ', ' ',' ' }};
+// Declaração das funções
+void printarTabuleiro(char tabuleiro[3][3]);
+void getEscolha(int& escolha);
+bool verificarEscolha(char tabuleiro[3][3], int escolha, int& linha, int& coluna);
+bool verificarSeHouveVitoria(char tabuleiro[3][3], char jogadorAtual);
 
-//declaracao de variaveis
-    const char playerX = 'X';
-    const char playerO = 'O';
-    char currentPlayer = playerX;
-    int choice ;
-    int row;
-    int column;
-    bool win = false;
-
-//printando tabuleiro
-    for (int i = 0; i < 9; i++){
-    cout << "   |   |   " << endl;
-    cout << " " << board[0][0] << " | " << board[0][1] << " | " << board[0][2] << endl;
-    cout << "___|___|___" << endl;
-    cout << "   |   |   " << endl;
-    cout << " " << board[1][0] << " | " << board[1][1] << " | " << board[1][2] << endl;
-    cout << "___|___|___" << endl;
-    cout << "   |   |   " << endl;
-    cout << " " << board[2][0] << " | " << board[2][1] << " | " << board[2][2] << endl;
-    cout << "   |   |   " << endl;
+int main() {
+    // Inicialização do tabuleiro
+    char tabuleiro[3][3] = {{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}};
     
-//demonstrando jogador atual
-    cout<<"The current player is " << currentPlayer << endl;
+    // Definição dos jogadores
+    const char jogadorX = 'X';
+    const char jogadorO = 'O';
+    char jogadorAtual = jogadorX;
+    
+    // Variáveis para controlar o estado do jogo
+    int linha, coluna, escolha;
+    bool vitoria = false;
+
+    // Loop principal do jogo, máximo de 9 rodadas (para cada espaço do tabuleiro)
+    for (int i = 0; i < 9; i++) {
+
+        cout<<"\n\t=============== Jogo da Velha ===============\n"<<endl;
+
+        // Imprime o tabuleiro atual
+        printarTabuleiro(tabuleiro);
 
 
-//escolha do local onde o jogador ira inserir X ou O;
-    while(true){
-    cout << "Enter a number from 1-9 to choose the space: ";
-    cin >> choice;
+        cout <<"O jogador atual eh: " << jogadorAtual << endl;
 
-   
-
-        switch (choice){
-
-            case 1: row = 0; column = 0; break;
-            case 2: row = 0; column = 1; break;
-            case 3: row = 0; column = 2; break;
-            case 4: row = 1; column = 0; break;
-            case 5: row = 1; column = 1; break;
-            case 6: row = 1; column = 2; break;
-            case 7: row = 2; column = 0; break;
-            case 8: row = 2; column = 1; break;
-            case 9: row = 2; column = 2; break;
-
-            default: 
-            cout<<"Invalid choice."<<endl;
-            continue;
-        
-        }
-
-        if ( board [row][column] != ' '){
-                cout<<"You can't put on this space." << endl;
-            }
-
-        else { break;
-        }
-        
-    }
-
-//setando as lacunas do tabuleiro com a peca do jogador atual 
-        board[row][column] = currentPlayer;
-
-
-// Verificação de vitória nas linhas e colunas, se o jogador atual ganhar, o jogo acaba
-        for (int i = 0; i < 3; i++) {
-            if ((board[i][0] == board[i][1] && board[i][0] == board[i][2] && board[i][0] != ' ') ||
-                (board[0][i] == board[1][i] && board[0][i] == board[2][i] && board[0][i] != ' ')) {
-                cout << "Player " << currentPlayer << " Won the game!" << endl;
-                win = true;
-                break;
+        // Loop para obter uma escolha válida do jogador
+        while (true) {
+            // Solicita ao jogador que escolha uma posição no tabuleiro
+            getEscolha(escolha);
+            // Verifica se a escolha é válida e obtém a linha e coluna correspondentes
+            if (verificarEscolha(tabuleiro, escolha, linha, coluna)) {
+                break; // Sai do loop se a escolha for válida
             }
         }
 
-//verificacao de vitorias na diagonais
-        if ((board[0][0] == board[1][1] && board[0][0] == board[2][2] && board[0][0] != ' ') ||
-            (board[0][2] == board[1][1] && board[0][2] == board[2][0] && board[0][2] != ' ')) {
-            cout << "Player " << currentPlayer << " Won the game!" << endl;
-            win = true;
+        // Atualiza o tabuleiro com a jogada do jogador atual
+        tabuleiro[linha][coluna] = jogadorAtual;
+
+        // Verifica se a jogada resultou em uma vitória
+        if (verificarSeHouveVitoria(tabuleiro, jogadorAtual)) {
+            vitoria = true; // Marca que houve uma vitória
+            break; // Sai do loop principal porque o jogo terminou
         }
-//caso as verificacoes acima se tornem true, o jogo acaba
-        if (win) {
-            break;
-        }
-//mudando de jogador apos as verificacoes, neh
-        currentPlayer = (currentPlayer == playerX) ? playerO : playerX;
+
+        // Alterna para o próximo jogador
+        jogadorAtual = (jogadorAtual == jogadorX) ? jogadorO : jogadorX;
+
+        // Limpa a tela para o próximo turno
         system("cls");
-
     }
-//se todas as verificacoes anteriores nao se tornarem verdadeiras, eh um empate no jogo
-        if (!win) {
-            cout << "It's a draw." << endl;
-        }
+
+    // Imprime o tabuleiro final
+    printarTabuleiro(tabuleiro);
+
+    // Verifica se o jogo terminou em empate
+    if (!vitoria) {
+        cout << "O jogo empatou." << endl;
+    }
 
     return 0;
 }
-    
-    
-            
 
-     
+// Função para imprimir o tabuleiro
+void printarTabuleiro(char tabuleiro[3][3]) {
+    cout << "\t\t\t   |   |   " << endl;
+    cout << "\t\t\t " << tabuleiro[0][0] << " | " << tabuleiro[0][1] << " | " << tabuleiro[0][2] << endl;
+    cout << "\t\t\t___|___|___" << endl;
+    cout << "\t\t\t   |   |   " << endl;
+    cout << "\t\t\t " << tabuleiro[1][0] << " | " << tabuleiro[1][1] << " | " << tabuleiro[1][2] << endl;
+    cout << "\t\t\t___|___|___" << endl;
+    cout << "\t\t\t   |   |   " << endl;
+    cout << "\t\t\t " << tabuleiro[2][0] << " | " << tabuleiro[2][1] << " | " << tabuleiro[2][2] << endl;
+    cout << "\t\t\t   |   |   " << endl;
+}
 
+// Função para obter a escolha do jogador
+void getEscolha(int& escolha) {
+    cout << "\nDigite um numero de 1 a 9 para escolher o espaco: ";
+    cin >> escolha;
+}
 
+// Função para verificar se a escolha é válida e obter a linha e coluna correspondentes
+bool verificarEscolha(char tabuleiro[3][3], int escolha, int& linha, int& coluna) {
+    // Converte a escolha em linha e coluna do tabuleiro
+    switch (escolha) {
+        case 1: linha = 0; coluna = 0; break;
+        case 2: linha = 0; coluna = 1; break;
+        case 3: linha = 0; coluna = 2; break;
+        case 4: linha = 1; coluna = 0; break;
+        case 5: linha = 1; coluna = 1; break;
+        case 6: linha = 1; coluna = 2; break;
+        case 7: linha = 2; coluna = 0; break;
+        case 8: linha = 2; coluna = 1; break;
+        case 9: linha = 2; coluna = 2; break;
+        default:
+            cout << "Escolha inválida." << endl;
+            return false; // Retorna false se a escolha for inválida
+    }
+    // Verifica se o espaço escolhido já está ocupado
+    if (tabuleiro[linha][coluna] != ' ') {
+        cout << "Você não pode colocar nesse espaço." << endl;
+        return false; // Retorna false se o espaço já estiver ocupado
+    }
+    return true; // Retorna true se a escolha for válida
+}
 
-
-
-                          
+// Função para verificar se houve uma vitória
+bool verificarSeHouveVitoria(char tabuleiro[3][3], char jogadorAtual) {
+    // Verifica linhas e colunas para uma condição de vitória
+    for (int i = 0; i < 3; i++) {
+        if ((tabuleiro[i][0] == tabuleiro[i][1] && tabuleiro[i][0] == tabuleiro[i][2] && tabuleiro[i][0] != ' ') ||
+            (tabuleiro[0][i] == tabuleiro[1][i] && tabuleiro[0][i] == tabuleiro[2][i] && tabuleiro[0][i] != ' ')) {
+            cout << "Jogador " << jogadorAtual << " venceu o jogo!" << endl;
+            return true; // Retorna true se houver uma condição de vitória
+        }
+    }
+    // Verifica as diagonais para uma condição de vitória
+    if ((tabuleiro[0][0] == tabuleiro[1][1] && tabuleiro[0][0] == tabuleiro[2][2] && tabuleiro[0][0] != ' ') ||
+        (tabuleiro[0][2] == tabuleiro[1][1] && tabuleiro[0][2] == tabuleiro[2][0] && tabuleiro[0][2] != ' ')) {
+        cout << "Jogador " << jogadorAtual << " venceu o jogo!" << endl;
+        return true; // Retorna true se houver uma condição de vitória
+    }
+    return false; // Retorna false se não houver condição de vitória
+}
