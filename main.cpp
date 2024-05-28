@@ -13,149 +13,209 @@ Início do Projeto - Jogo da Velha
 
 using namespace std; 
 
-char board[3][3];
-const char Jogador = 'X';// Constante que representa o jogador.
-const char Computador = 'O';// Constante que representa o computador.
+//variaveis globais
+char tabuleiro[3][3]; //matriz 3x3 que representa o tabuleiro do jogo da velha.
+const char JOGADOR = 'X'; //connstante que representa o jogador.
+const char COMPUTADOR = 'O'; //constante que representa o computador.
 
-void resetBoard();// Função que reseta o tabuleiro.
-void printBoard();// Função que imprime o tabuleiro.
-int checarespacoslivres();// Função que verifica se há espaços livres no tabuleiro.
-void movimentojogador();// Função que permite ao jogador fazer uma jogada.
-void movimentopc();// Função que permite ao computador fazer uma jogada.
-char checarVencedor();// Função que verifica se há um vencedor.
-void printWinner(char);// Função que imprime o vencedor.
+//prototipo de funções
+//() definem o paramentro da funcao. O () vazio indica que a função não recebe parâmetros.
+void resetTabuleito(); //reseta o tabuleiro.
+void printTabuleiro(); //exibe o tabuleiro.
+int checarespacoslivres(); //verifica se ha espaços livres no tabuleiro.
+void movimentoJogador(); //movimento do jogador.
+void movimentoComputador(); //movimneto do computador;
+char ChecarVencedor(); //verifica se ha vencedor.
+void printVencedor(char); //exibe o vencedor.
 
 int main(){
 
-    char vencedor = ' ';
-    char response = ' ';
+    //char é um tipo de dado que armazena um caractere.
+    char vencedor = ' '; //armazena quem sera o vencedor.
+    char jogarNovamente; //se o jogador desejar jogar novamente.
 
-    // Loop principal do jogo
-    do
-    {
+    do{
+
         vencedor = ' ';
-        response = ' ';
-        resetBoard();
+        jogarNovamente = ' ';
+        resetTabuleito();
 
-        while (vencedor == ' ' && checarespacoslivres() != 0)
-        {
-            printBoard();
+        // loop pricipal do jogo, (!=) significa diferente.
+        while(vencedor == ' ' && checarespacoslivres() !=0){
 
-            movimentojogador();
-            vencedor = checarVencedor();
-            if (vencedor != ' ' || checarespacoslivres() == 0)
-            {
+            printTabuleiro();
+
+            movimentoJogador();
+            vencedor = ChecarVencedor();
+            if(vencedor !=' ' || checarespacoslivres() ==0){
+
+                //forca parada.
                 break;
             }
 
-            movimentopc();
-            vencedor = checarVencedor();
-            if (vencedor != ' ' || checarespacoslivres() == 0)
-            {
+            movimentoComputador();
+            vencedor = ChecarVencedor();
+            if(vencedor !=' ' || checarespacoslivres() ==0){
+
+                //forca parada.
                 break;
             }
         }
 
-        printBoard();
-        printWinner(vencedor);
+        printTabuleiro();
+        printVencedor(vencedor);
 
-        cout << "\nGostaria de jogar novamente? (S/N): ";// \n quebra de linha
-        cin >> response;
-        response = toupper(response);//toupper() é uma função que converte caracteres minúsculos em maiúsculos.
-    } while (response == 'S');
+        cout << "\nDeseja jogar novamente? (S/N): ";
+        cin>>jogarNovamente;
+        //toupper() converte caracteres minúsculos em maiúsculos.
+        jogarNovamente = toupper(jogarNovamente);
 
-    cout << "Obrigado por Jogar!";
+    } while(jogarNovamente == 'S');
+
+    cout<<"Obrigado por jogar!"<<endl;
 
     return 0;
 }
 
-void resetBoard()
-{
-    for (int i = 0; i < 3; i++)
-    {
-        for (int j = 0; j < 3; j++)
-        {
-            board[i][j] = ' ';
+//toda vez que a funcao for utilizada, ela ira limpar o tabuleiro.
+void resetTabuleito(){
+
+    for(int i=0; i<3; i++){
+        for(int j=0; j<3; j++){
+            tabuleiro[i][j] = ' ';
         }
     }
 }
 
-//exibicao do tabuleiro
-void printBoard()
-{
-    cout << " " << board[0][0] << " | " << board[0][1] << " | " << board[0][2] << " ";
+//funcao rewsponsavel por exibir o tabuleiro.
+void printTabuleiro(){
+
+     /*printf exibe uma mensagem na tela.
+     %c possui a funcao de exibir um caractere especifico.
+     \n faz quebra de linha.(uma nova linha)
+     */ 
+    cout << " " << tabuleiro[0][0] << " | " << tabuleiro[0][1] << " | " << tabuleiro[0][2] << " ";
     cout << "\n---|---|---\n";
-    cout << " " << board[1][0] << " | " << board[1][1] << " | " << board[1][2] << " ";
+    cout << " " << tabuleiro[1][0] << " | " << tabuleiro[1][1] << " | " << tabuleiro[1][2] << " ";
     cout << "\n---|---|---\n";
-    cout << " " << board[2][0] << " | " << board[2][1] << " | " << board[2][2] << " ";
+    cout << " " << tabuleiro[2][0] << " | " << tabuleiro[2][1] << " | " << tabuleiro[2][2] << " ";
     cout << "\n";
 }
 
-// Verifica se ha espacos livres no tabuleiro
-int checarespacoslivres()
-{
-    int espacolivre = 9;
+int checarespacoslivres(){
 
-    for (int i = 0; i < 3; i++)
-    {
-        for (int j = 0; j < 3; j++)
-        {
-            if (board[i][j] != ' ')
-            {
-                espacolivre--;
+    //numero total de casas do tabuleiro.
+    int EspacosLivres = 9;
+
+    for(int i=0; i<3; i++){
+        for(int j=0; j<3; j++){
+            if(tabuleiro[i][j] !=' '){
+                
+                //caso a casa do tabuleiro seja diferente de vazio, reduz o numero de casas livres.
+                EspacosLivres--;
             }
         }
     }
-    return espacolivre;
+    return EspacosLivres;
 }
 
-/* Função que permite ao jogador fazer uma jogada.
-Faz isso verificando se a posição escolhida está vazia, e depois atribuindo a posição escolhida pelo jogador ao tabuleiro. 
-*/
-void movimentojogador()
-{
-    int x;
-    int y;
+void movimentoJogador(){
 
-    do
-    {
-        cout << "Insira fileira #(1-3): ";
+    int x, y;
+
+    do{
+        //cout exibe uma mensagem na tela.
+        cout << "Insira uma Linha (1-3): ";
+        //cin recebe um valor digitado pelo usuario.
         cin >> x;
         x--;
-        cout << "Enter coluna #(1-3): ";
+
+        cout << "Insira uma Coluna (1-3): ";
         cin >> y;
         y--;
 
-        if (board[x][y] != ' ')
-        {
-            cout << "Movimento Invalido!\n";
-        }
-        else
-        {
-            board[x][y] = Jogador;
+        if(tabuleiro[x][y] !=' '){
+
+            cout<<"Movimento Invalido, tente novamente"<<endl;
+        }else{
+            tabuleiro[x][y] = JOGADOR;
+            //brak interrompe a execução do loop.
             break;
         }
-    } while (board[x][y] != ' ');
+    }while(tabuleiro[x][y] != ' ');
 }
 
-/* Função que permite o pc fazer uma jogada.
-Faz isso verificando se a posição escolhida está vazia, e depois atribuindo a posição escolhida pelo pc ao tabuleiro. 
-*/
-void movimentopc()
-{
+void movimentoComputador(){
+
+    //cria um numero aleatorio.
     srand(time(0));
-    int x;
-    int y;
+    int x, y;
 
-    if (checarespacoslivres() > 0)
-    {
-        do
-        {
-            x = rand() % 3;
-            y = rand() % 3;
-        } while (board[x][y] != ' ');
+    //caso tenha espaco livre
+    if(checarespacoslivres() >0){
 
-        board[x][y] = Computador;
+        do{
+
+            //(%3) gera um numero aleatorio entre 0 e 2.
+            x=rand()%3;
+            y=rand()%3;
+        } while (tabuleiro[x][y] !=' ');
+
+        tabuleiro[x][y] = COMPUTADOR;
+    }else{
+
+        //espaço livre e empate.
+        printVencedor(' ');
     }
 
+}
+
+char ChecarVencedor(){
+
+    //checagem de linhas
+    for(int i=0; i<3; i++){
+        
+        //checar se a linhas sao iguais.
+        if(tabuleiro[i][0] == tabuleiro[i][1] && tabuleiro[i][0] == tabuleiro[i][2]){
+
+            return tabuleiro[i][0];
+        }
+    }
+
+    //checagem de colunas
+    for(int i=0; i<3; i++){
+
+        //checar se as colunas sao iguais.
+        if(tabuleiro[0][i] == tabuleiro[1][i] && tabuleiro[0][i] == tabuleiro[2][i]){
+
+            return tabuleiro[0][i];
+        }
+    }
+
+    //checagem de diagonais.
+    if(tabuleiro[0][0] == tabuleiro[1][1] && tabuleiro[0][0] == tabuleiro[2][2]){
+
+            //retorna 0,0 porque a diagonal começa no canto superior esquerdo.
+            return tabuleiro[0][0];
+        }
+    if(tabuleiro[0][2] == tabuleiro[1][1] && tabuleiro[0][2] == tabuleiro[2][0]){
+
+            //retorna 0,2 porque a diagonal começa no canto superior direito.
+            return tabuleiro[0][2];
+        }
+
+    return ' ';
+}
+
+void printVencedor(char vencedor){
+
+    if(vencedor == JOGADOR){
+        cout<<"VOCE VENCEU!";
+    }
+    else if(vencedor == COMPUTADOR){
+        cout<<"VOCE PERDEU!";
+    }
+    else{
+        cout<<"EMPATE!";
+    }
 }
