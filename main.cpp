@@ -90,6 +90,7 @@ void resetTabuleito(){
 //funcao rewsponsavel por exibir o tabuleiro.
 void printTabuleiro(){
 
+     system("cls"); //limpa a tela do console.
      /*printf exibe uma mensagem na tela.
      %c possui a funcao de exibir um caractere especifico.
      \n faz quebra de linha.(uma nova linha)
