@@ -217,6 +217,6 @@ void printVencedor(char vencedor){
         cout<<"VOCE PERDEU!";
     }
     else{
-        cout<<"EMPATE!";
+        cout<<"DEU VELHA!";
     }
 }
