@@ -19,40 +19,49 @@ Início do Projeto - Jogo da Velha
 #include <cstdlib> //biblioteca para usar system("cls") e system("pause").
 #include <ctime> //biblioteca para usar time(0) e srand(time(0)), time(0) e srand(time(0)) são funções que geram números aleatórios.
 #include <cctype> //biblioteca para usar toupper(), toupper() é uma função que converte caracteres minúsculos em maiúsculos.
+#include <limits> //biblioteca que contém constantes que representam os limites de variáveis de tipos numéricos.
 
 using namespace std;
 
 // Variáveis globais
+//const define uma constante, ou seja, um valor que não pode ser alterado.
 char tabuleiro[3][3];
-const char JOGADOR1 = 'X';//const char é uma constante que armazena um caractere, const char JOGADOR1 = 'X' significa que o jogador 1 é o X.
+const char JOGADOR1 = 'X';
 const char JOGADOR2 = 'O';
 const char COMPUTADOR = 'O';
 
 // Prototipo de funções, prototipo de funções é uma declaração antecipada de uma função, informando ao compilador sobre a existência da função.
 //() definem o paramentro da funcao. O () vazio indica que a função não recebe parâmetros.
-void resetTabuleiro();//reseta o tabuleiro.
-void printTabuleiro();//exibe o tabuleiro.
-int checarEspacosLivres();//checa os espaços livres no tabuleiro.
-void movimentoJogador();//movimento do jogador.
-void movimentoComputador();//movimento do computador.
-char checarVencedor();//checa o vencedor.
-void printVencedor(char);//exibe o vencedor.
-void movimentoJogadorVsJogador(int jogadorAtual);//movimento do jogador vs jogador.
-void printarTabuleiro(char tabuleiro[3][3]);//exibe o tabuleiro.
-void getEscolha(int& escolha);//utiliza a escolha do jogador.
-bool verificarEscolha(char tabuleiro[3][3], int escolha, int& linha, int& coluna);//verifica a escolha do jogador.
-bool verificarSeHouveVitoria(char tabuleiro[3][3], char jogadorAtual);//verifica se houve vitoria.
+void resetTabuleiro();//reseta o tabuleiro
+void printTabuleiro();//imprime o tabuleiro
+int checarEspacosLivres();//checa os espaços livres
+void movimentoJogador();//movimento do jogador
+void movimentoComputador();//movimento do computador
+char checarVencedor();//checa o vencedor
+void printVencedor(char);//exibe o vencedor
+void movimentoJogadorVsJogador(int jogadorAtual);//movimento do jogador vs jogador
+void exibirTabuleiro(char tabuleiro[3][3]);//exibe o tabuleiro
+void getEscolha(int& escolha);//pega a escolha do jogador
+bool verificarEscolha(char tabuleiro[3][3], int escolha, int& linha, int& coluna);//verifica a escolha do jogador
+bool verificarSeHouveVitoria(char tabuleiro[3][3], char jogadorAtual);//verifica se houve vitoria
+bool isNumber(const string& s);//verifica se é um número
 
 int main() {
 
-    //modo de jogo que sera escolhido.
+    //modo de jogo que sera escolhido
     int modoJogo;
     cout << "Escolha o modo de jogo:\n1. Jogador vs Computador\n2. Jogador vs Jogador\n";
-    cin >> modoJogo;
+    while (!(cin >> modoJogo) || (modoJogo != 1 && modoJogo != 2)) {
+        cout << "Entrada inválida. Por favor, insira 1 ou 2: ";
+        //cin.clear() limpa o estado de erro do fluxo de entrada, fluxo de entrada é o fluxo de dados que entra no programa.
+        cin.clear();
+        //cin.ignore() extrai e descarta caracteres do buffer de entrada
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
 
-    //char é um tipo de dado que armazena um caractere.
-    char vencedor = ' ';//armazena quem sera o vencedor.
-    char jogarNovamente;//armazena se o jogador deseja jogar novamente.
+    //char e um tipo de dado que armazzena um caractere
+    char vencedor = ' ';
+    char jogarNovamente;
 
     //do while é uma estrutura de repetição que executa um bloco de código enquanto a condição for verdadeira.
     do {
@@ -60,32 +69,32 @@ int main() {
         jogarNovamente = ' ';
         resetTabuleiro();
 
-        // Jogador vs Computador
+        //jogador vs computador
         if (modoJogo == 1) {
 
-            // loop pricipal do jogo, (!=) significa diferente.
+            //loop principal do jogo, (!=) significa diferente
             while (vencedor == ' ' && checarEspacosLivres() != 0) {
                 printTabuleiro();
                 movimentoJogador();
                 vencedor = checarVencedor();
                 if (vencedor != ' ' || checarEspacosLivres() == 0) {
-                    
-                    //se o vencedor for diferente de vazio ou se não houver espaços livres, o loop é quebrado.
+
+                    //se hover vencedor ou der velha, o loop é quebrado
                     break;
                 }
-                movimentoComputador();//movimento do computador.
-                vencedor = checarVencedor();//checa o vencedor.
+                movimentoComputador();//movimento do computador
+                vencedor = checarVencedor();//checa o vencedor
             }
         } 
-        // Jogador vs Jogador
+        //jogador vs jogador
         else {
-            int jogadorAtual = JOGADOR1; // Jogador 1 começa
+            int jogadorAtual = JOGADOR1;//jogador 1 começa
             for (int i = 0; i < 9; i++) {
                 cout << "\n\t=============== Jogo da Velha ===============\n" << endl;
-                printarTabuleiro(tabuleiro);
+                exibirTabuleiro(tabuleiro);
                 cout << "O jogador atual eh: " << (jogadorAtual == JOGADOR1 ? 'X' : 'O') << endl;
                 while (true) {
-                    int escolha;//escolha do jogador.
+                    int escolha;//escolha do jogador
                     getEscolha(escolha);
                     int linha, coluna;
                     if (verificarEscolha(tabuleiro, escolha, linha, coluna)) {
@@ -93,7 +102,7 @@ int main() {
                         break;
                     }
                 }
-                // Verificar se houve vitoria, se sim, o jogo acaba.
+                //verifica se houve vitoria, se sim, o loop é quebrado
                 if (verificarSeHouveVitoria(tabuleiro, jogadorAtual)) {
                     vencedor = jogadorAtual;
                     break;
@@ -106,9 +115,13 @@ int main() {
         printTabuleiro();
         printVencedor(vencedor);
 
-        //toupper() é uma função que converte caracteres minúsculos em maiúsculos, remove a necessidade de utilizar bool.
         cout << "\nDeseja jogar novamente? (S/N): ";
-        cin >> jogarNovamente;
+        while (!(cin >> jogarNovamente) || (toupper(jogarNovamente) != 'S' && toupper(jogarNovamente) != 'N')) {
+            cout << "Entrada inválida. Por favor, insira S ou N: ";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+        //toupper() é uma função que converte caracteres minúsculos em maiúsculos., remove a necessidade de utilizar bool
         jogarNovamente = toupper(jogarNovamente);
 
     } while (jogarNovamente == 'S');
@@ -118,7 +131,7 @@ int main() {
     return 0;
 }
 
-//toda vez que a funcao for utilizada, ela ira limpar o tabuleiro.
+//toda vez que for utilizada, ela ira limpar o tabuleiro
 void resetTabuleiro() {
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
@@ -127,10 +140,10 @@ void resetTabuleiro() {
     }
 }
 
-//funcao responsavel por exibir o tabuleiro.
+//funcao que exibe o tabuleiro
 void printTabuleiro() {
-    system("cls");//limpa a tela.
-    cout<<"\n\t=============== Jogo da Velha ===============\n"<<endl;
+    system("cls");//limpa a tela
+    cout << "\n\t=============== Jogo da Velha ===============\n" << endl;
     cout << " " << tabuleiro[0][0] << " | " << tabuleiro[0][1] << " | " << tabuleiro[0][2] << " ";
     cout << "\n---|---|---\n";
     cout << " " << tabuleiro[1][0] << " | " << tabuleiro[1][1] << " | " << tabuleiro[1][2] << " ";
@@ -141,13 +154,13 @@ void printTabuleiro() {
 
 int checarEspacosLivres() {
 
-    //numero total de espacos livres, fdaz leitura antes e depois das jogadas.
+    //numero total de espacos livres, faz a leitura antes e depois de cada movimento
     int espacosLivres = 9;
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
             if (tabuleiro[i][j] != ' ') {
 
-                //caso a casa do tabuleiro seja diferente de vazio, reduz o numero de casas livres.
+                //caso a posicao nao esteja vazia, reduz o numero de espacos livres
                 espacosLivres--;
             }
         }
@@ -155,18 +168,28 @@ int checarEspacosLivres() {
     return espacosLivres;
 }
 
-//movimento do jogador (Player vs Computador).
+//funcao que faz o movimento do jogador(jogadorvscomputador)
 void movimentoJogador() {
     int x, y;
     do {
         cout << "Insira uma Linha (1-3): ";
-        cin >> x;
-        //x-- é a mesma coisa que x = x - 1, esta sendo utilizado para que o jogador insira a linha de 1 a 3, mas o vetor começa de 0 a 2.
+        while (!(cin >> x) || x < 1 || x > 3) {
+            cout << "Valor invalido. Por favor, insira um número entre 1 e 3: ";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+        //reduz 1 para que o jogador insira a linha de 1 a 3 e nao de 0 a 2
         x--;
+
         cout << "Insira uma Coluna (1-3): ";
-        cin >> y;
-        //y-- é a mesma coisa que y = y - 1, esta sendo utilizado para que o jogador insira a coluna de 1 a 3, mas o vetor começa de 0 a 2.
+        while (!(cin >> y) || y < 1 || y > 3) {
+            cout << "Valor invalido. Por favor, insira um número entre 1 a 3: ";
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        }
+        //reduz 1 para que o jogador insira a coluna de 1 a 3 e nao de 0 a 2
         y--;
+
         if (tabuleiro[x][y] != ' ') {
             cout << "Movimento Invalido, tente novamente" << endl;
         } else {
@@ -178,40 +201,42 @@ void movimentoJogador() {
 
 void movimentoComputador() {
 
-    //escolhe um valor aleatorio para x e y.
+    //escolhe um valor aleatorio para x e y
     srand(time(0));
     int x, y;
     if (checarEspacosLivres() > 0) {
         do {
 
-            //(%3) gera um numero aleatorio entre 0 e 2.
+            //rand()$3 gera um numero aleatorio de 0 a 2
             x = rand() % 3;
             y = rand() % 3;
         } while (tabuleiro[x][y] != ' ');
         tabuleiro[x][y] = COMPUTADOR;
     } else {
 
-        //em caso de falta de movimentos, o jogo acaba.
+        //em caso de falta de movimentos, o jogo acaba
         printVencedor(' ');
     }
 }
 
 char checarVencedor() {
-
-    //checagem de linha.
+    
+    //checagem de linhas
     for (int i = 0; i < 3; i++) {
 
-        //checa se as linhas sao iguais.
+        //checa se a linha i é igual
         if (tabuleiro[i][0] == tabuleiro[i][1] && tabuleiro[i][0] == tabuleiro[i][2]) {
+            //retorna o valor da linha i
             return tabuleiro[i][0];
         }
     }
 
-    //checagem de coluna.
+    //checagem de colunas
     for (int i = 0; i < 3; i++) {
 
-        //checa se as colunas sao iguais.
+        //checa se a coluna i é igual
         if (tabuleiro[0][i] == tabuleiro[1][i] && tabuleiro[0][i] == tabuleiro[2][i]) {
+            //retorna o valor da coluna i
             return tabuleiro[0][i];
         }
     }
@@ -219,13 +244,11 @@ char checarVencedor() {
     //checagem de diagonais.
     //diagonal esquerda.
     if (tabuleiro[0][0] == tabuleiro[1][1] && tabuleiro[0][0] == tabuleiro[2][2]) {
-
         //retorna 0,0 porque a diagonal começa no canto superior esquerdo.
         return tabuleiro[0][0];
     }
     //diagonal direita.
     if (tabuleiro[0][2] == tabuleiro[1][1] && tabuleiro[0][2] == tabuleiro[2][0]) {
-
         //retorna 0,2 porque a diagonal começa no canto superior direito.
         return tabuleiro[0][2];
     }
@@ -246,7 +269,7 @@ void printVencedor(char vencedor) {
 }
 
 //movimento do jogador vs jogador.
-void printarTabuleiro(char tabuleiro[3][3]) {
+void exibirTabuleiro(char tabuleiro[3][3]) {
     cout << " " << tabuleiro[0][0] << " | " << tabuleiro[0][1] << " | " << tabuleiro[0][2] << " ";
     cout << "\n---|---|---\n";
     cout << " " << tabuleiro[1][0] << " | " << tabuleiro[1][1] << " | " << tabuleiro[1][2] << " ";
@@ -258,7 +281,11 @@ void printarTabuleiro(char tabuleiro[3][3]) {
 //escolha de posicionamento do jogador.
 void getEscolha(int& escolha) {
     cout << "\nDigite um numero de 1 a 9 para escolher o espaco: ";
-    cin >> escolha;
+    while (!(cin >> escolha) || escolha < 1 || escolha > 9) {
+        cout << "Valor invalido. Por favor, insira um número entre 1 e 9: ";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
 }
 
 //verifica se a escolha do jogador é valida.
@@ -276,13 +303,13 @@ bool verificarEscolha(char tabuleiro[3][3], int escolha, int& linha, int& coluna
         default:
 
             // posicao invalida caso o jogador escolha um numero diferente de 1 a 9.
-            cout << "Escolha inválida." << endl;
+            cout << "Escolha invalida." << endl;
             return false;
     }
     if (tabuleiro[linha][coluna] != ' ') {
 
         //posicao ocupada caso o jogador escolha uma posicao que ja foi preenchida.
-        cout << "Você não pode colocar nesse espaço." << endl;
+        cout << "Espaco ja Ocupado." << endl;
         return false;
     }
     return true;
@@ -295,7 +322,7 @@ bool verificarSeHouveVitoria(char tabuleiro[3][3], char jogadorAtual) {
         //verifica se houve vitoria na linha ou na coluna.
         if ((tabuleiro[i][0] == tabuleiro[i][1] && tabuleiro[i][0] == tabuleiro[i][2] && tabuleiro[i][0] != ' ') ||
             (tabuleiro[0][i] == tabuleiro[1][i] && tabuleiro[0][i] == tabuleiro[2][i] && tabuleiro[0][i] != ' ')) {
-           
+
             //exibe o vencedor.
             cout << "Jogador " << jogadorAtual << " venceu o jogo!" << endl;
             return true;
