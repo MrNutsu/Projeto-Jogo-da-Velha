@@ -24,7 +24,7 @@ using namespace std;
 
 // Variáveis globais
 char tabuleiro[3][3];
-const char JOGADOR1 = 'X';
+const char JOGADOR1 = 'X';//const char é uma constante que armazena um caractere, const char JOGADOR1 = 'X' significa que o jogador 1 é o X.
 const char JOGADOR2 = 'O';
 const char COMPUTADOR = 'O';
 
@@ -54,6 +54,7 @@ int main() {
     char vencedor = ' ';//armazena quem sera o vencedor.
     char jogarNovamente;//armazena se o jogador deseja jogar novamente.
 
+    //do while é uma estrutura de repetição que executa um bloco de código enquanto a condição for verdadeira.
     do {
         vencedor = ' ';
         jogarNovamente = ' ';
@@ -140,13 +141,13 @@ void printTabuleiro() {
 
 int checarEspacosLivres() {
 
-    //numero total de espacos livres.
+    //numero total de espacos livres, fdaz leitura antes e depois das jogadas.
     int espacosLivres = 9;
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
             if (tabuleiro[i][j] != ' ') {
 
-                //caso a casa do tabuleiro seja diferente de vazio, reduz o nome de casas livres.
+                //caso a casa do tabuleiro seja diferente de vazio, reduz o numero de casas livres.
                 espacosLivres--;
             }
         }
@@ -154,6 +155,7 @@ int checarEspacosLivres() {
     return espacosLivres;
 }
 
+//movimento do jogador (Player vs Computador).
 void movimentoJogador() {
     int x, y;
     do {
@@ -215,11 +217,13 @@ char checarVencedor() {
     }
 
     //checagem de diagonais.
+    //diagonal esquerda.
     if (tabuleiro[0][0] == tabuleiro[1][1] && tabuleiro[0][0] == tabuleiro[2][2]) {
 
         //retorna 0,0 porque a diagonal começa no canto superior esquerdo.
         return tabuleiro[0][0];
     }
+    //diagonal direita.
     if (tabuleiro[0][2] == tabuleiro[1][1] && tabuleiro[0][2] == tabuleiro[2][0]) {
 
         //retorna 0,2 porque a diagonal começa no canto superior direito.
